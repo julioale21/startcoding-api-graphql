@@ -30,7 +30,7 @@ export class AuthorResolver {
   }
 
   @Query(() => [Author])
-  async getAllAuthors() {
+  async getAllAuthors(): Promise<Author[]> {
     const authors = await this.authorRepository.find();
     return authors;
   }
