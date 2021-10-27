@@ -1,13 +1,15 @@
 import { createConnection } from "typeorm";
 import path from "path";
 
+import { enviroment } from "./enviroment";
+
 export async function connect() {
   await createConnection({
     type: "postgres",
-    port: 5432,
-    username: "postgres",
-    password: "123456",
-    database: "nodejs-course",
+    port: Number(enviroment.DB_PORT),
+    username: enviroment.DB_USERNAME,
+    password: enviroment.DB_PASSWORD,
+    database: enviroment.DB_NAME,
     entities: [
       path.join(__dirname, "../entity/**/**.ts")
     ],
