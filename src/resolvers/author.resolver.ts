@@ -28,4 +28,10 @@ export class AuthorResolver {
           console.error(error)
         }
   }
+
+  @Query(() => [Author])
+  async getAllAuthors() {
+    const authors = await this.authorRepository.find();
+    return authors;
+  }
 }
