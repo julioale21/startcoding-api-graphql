@@ -12,7 +12,7 @@ export class Book {
   @Column()
   title!: string
 
-  @Field()
+  @Field(() => Author)
   @ManyToOne(() => Author, author => author.books )
   author!: Author
 
