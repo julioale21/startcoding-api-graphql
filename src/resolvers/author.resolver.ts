@@ -52,19 +52,37 @@ export class AuthorResolver {
 
   @Query(() => Author)
   async getAuthorById(@Arg("input", () => AuthorInputId) input: AuthorInputId) : Promise<Author | undefined> {
-    const author = await this.authorRepository.findOne(input.id);
-    return author;
+    try {
+      const author = await this.authorRepository.findOne(input.id);
+
+      if (!author) {
+        const error = new Error();
+        error.message = "Author does not exists";
+        throw error;
+      }
+      return author;
+    } catch (e) {
+      throw new Error(e as string)
+    }
   }
 
   @Mutation(() => Author)
-  async updateAuthor(@Arg("input", () => AuthorUpdateInput) input: AuthorUpdateInput): Promise<Author> {
+  async updateAuthor(@Arg("input", () => AuthorUpdateInput) input: AuthorUpdateInput): Promise<Author | undefined> {
     const authorExist = await this.authorRepository.findOne(input.id);
 
     if (!authorExist) throw new Error("Author doesn't exists");
-    
-    return await this.authorRepository.save({
+
+    const updatedAuthor = await this.authorRepository.save({
       id: input.id,
       fullName: input.fullName
     })
+
+    return await this.authorRepository.findOne(updatedAuthor.id)
+  }
+
+  @Mutation(() => Boolean)
+  async deleteAuthor(@Arg("input", () => AuthorInputId) input: AuthorInputId) : Promise<Boolean> {
+    await this.authorRepository.delete(input.id)
+    return true;
   }
 }
