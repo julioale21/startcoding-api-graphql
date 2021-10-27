@@ -82,7 +82,11 @@ export class AuthorResolver {
 
   @Mutation(() => Boolean)
   async deleteAuthor(@Arg("input", () => AuthorInputId) input: AuthorInputId) : Promise<Boolean> {
-    await this.authorRepository.delete(input.id)
-    return true;
+    try {
+      await this.authorRepository.delete(input.id)
+      return true;
+    } catch (error) {
+      throw new Error("Operation failed")
+    }
   }
 }
